@@ -4,6 +4,16 @@ set -e
 # ZSH Setup Script für Ubuntu Server
 # Installiert: zsh, oh-my-zsh, powerlevel10k, fzf, atuin
 
+# ===========================================
+# KONFIGURATION - Hier anpassen!
+# ===========================================
+# URL zur .p10k.zsh (raw GitHub URL)
+P10K_CONFIG_URL="https://raw.githubusercontent.com/ruedigerp/setup-zsh/main/.p10k.zsh"
+
+# Optional: Ganzes Dotfiles-Repo klonen
+# DOTFILES_REPO="https://github.com/DEIN-USER/dotfiles.git"
+# ===========================================
+
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -78,6 +88,16 @@ if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
+# Powerlevel10k Config von Git laden
+if [[ -n "$P10K_CONFIG_URL" ]]; then
+    log "Lade .p10k.zsh von Git..."
+    if curl -fsSL "$P10K_CONFIG_URL" -o "$HOME/.p10k.zsh"; then
+        success ".p10k.zsh heruntergeladen"
+    else
+        warn "Konnte .p10k.zsh nicht laden - nutze 'p10k configure' nach der Installation"
+    fi
+fi
+
 # .zshrc konfigurieren
 log "Konfiguriere .zshrc..."
 cat > "$HOME/.zshrc" << 'EOF'
@@ -142,9 +162,7 @@ success "========================================="
 echo ""
 echo "Nächste Schritte:"
 echo "  1. Neue Shell starten: exec zsh"
-echo "  2. Powerlevel10k konfigurieren: p10k configure"
-echo "  3. Atuin einrichten: atuin login (optional für Sync)"
+echo "  2. Atuin einrichten: atuin login (optional für Sync)"
 echo ""
 echo "Hinweis: Für beste Darstellung MesloLGS NF Font installieren:"
 echo "  https://github.com/romkatv/powerlevel10k#fonts"
-
