@@ -126,6 +126,7 @@ source $ZSH/oh-my-zsh.sh
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 
 # Atuin
+export PATH="$HOME/.atuin/bin:$PATH"
 if command -v atuin &> /dev/null; then
     eval "$(atuin init zsh)"
 fi
