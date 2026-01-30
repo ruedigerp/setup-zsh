@@ -106,6 +106,22 @@ else
     warn "Konnte .p10k.zsh nicht laden - nutze 'p10k configure' nach der Installation"
 fi
 
+# ZSH Config-Dateien herunterladen
+ZSH_CONFIG_DIR="$HOME/.zsh.d"
+REPO_ZSH_URL="https://raw.githubusercontent.com/ruedigerp/setup-zsh/main/zsh"
+
+log "Lade ZSH Config-Dateien..."
+mkdir -p "$ZSH_CONFIG_DIR"
+
+# Liste der Config-Dateien (erweiterbar)
+for config_file in aliases functions; do
+    if curl -fsSL "$REPO_ZSH_URL/$config_file" -o "$ZSH_CONFIG_DIR/$config_file"; then
+        success "$config_file heruntergeladen"
+    else
+        warn "Konnte $config_file nicht laden"
+    fi
+done
+
 # .zshrc konfigurieren
 log "Konfiguriere .zshrc..."
 cat > "$HOME/.zshrc" << 'EOF'
@@ -139,15 +155,12 @@ if command -v atuin &> /dev/null; then
     eval "$(atuin init zsh)"
 fi
 
-# Aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias k='kubectl'
-alias kgp='kubectl get pods'
-alias kgs='kubectl get svc'
-alias d='docker'
-alias dc='docker compose'
+# Lade alle Config-Dateien aus ~/.zsh.d/
+if [[ -d ~/.zsh.d ]]; then
+    for config in ~/.zsh.d/*; do
+        [[ -f "$config" ]] && source "$config"
+    done
+fi
 
 # Powerlevel10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh

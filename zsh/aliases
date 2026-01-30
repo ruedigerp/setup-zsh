@@ -1,0 +1,70 @@
+
+
+# Job-Control: Schnelles In-Den-Vordergrund-Bringen
+alias  1='fg %1'
+alias  2='fg %2'
+alias  3='fg %3'
+alias  4='fg %4'
+alias  5='fg %5'
+alias  6='fg %6'
+
+# ...und wieder zurück!
+alias 11='bg %1'
+alias 22='bg %2'
+alias 33='bg %3'
+alias 44='bg %4'
+alias 55='bg %5'
+alias 66='bg %6'
+
+# Alle Jobs anzeigen
+alias  j='jobs -l'
+
+# Set custom alias for ps
+case $(uname) in
+  'Linux')
+    alias p='ps fauxww'
+    alias pgrep='ps fauxww | grep $@'
+    alias pigrep='ps fauxww | grep -i $@'
+  ;;
+  'Darwin')
+    alias p='ps auxww'
+    alias pgrep='ps auxww | grep $@'
+    alias pigrep='ps auxww | grep -i $@'
+    alias aliasip="echo ifconfig en0 alias 192.168.0.101 255.255.255.0 und ifconfig en0 -alias 192.168.0.101 "
+    alias mkimage="hdiutil create -volname \"DiscImage\" -srcfolder ~/gitlab -ov ~/diskimage.dmg"
+
+    alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+    alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+    alias intip="ipconfig getifaddr en0"
+    alias screenshot="screencapture -T 3 -t jpg -P delayedpic.jpg"
+    alias ram="vm_stat -c 10 1"
+    alias lupdate="sudo softwareupdate -l ; echo mupdate"
+    alias mupdate="sudo softwareupdate -ia "
+
+    alias tytikup="sudo wg-quick up wireguard-export/web07.conf"
+    alias tytikdown="sudo wg-quick down wireguard-export/web07.conf"
+    alias modown="sudo wg-quick down wireguard-export/client_rk_mac.conf"
+    alias moup="sudo wg-quick up wireguard-export/client_rk_mac.conf"
+    alias ls="colorls"
+    alias vim=nvim
+  ;;
+  *)
+    alias vm-list='curl -s https://vm-tracker.kuepper.nrw/api/vms | jq -r ".[] | \"\(.hostname)\t\(.ip_address)\t\(.status)\""'
+    alias hrl="helm repo list | sort | grep -v NAME"
+    alias hrls="helm repo list | sort | grep $@"
+    alias k=kubectl
+    alias kx=kubectx
+    alias hcstatus="hcloud server list -o columns=name,age,status,ipv4,labels,type"
+    alias lhistory='fc -lfDE -1000'
+    alias ssh-keycheck="ssh-keygen -l -f $@"
+    alias sculpin='docker run -it --rm -p 8000:8000 -v `pwd`:/data -u `id -u` clue/sculpin'
+    alias myip='dig +short myip.opendns.com @208.67.222.222'
+    alias knode="kubectl get nodes "
+    alias kdeploy="kubectl get deploy "
+    alias kpod="kubectl get pods "
+    ;;  
+esac
+
+unalias ping
+

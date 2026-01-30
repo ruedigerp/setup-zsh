@@ -1,0 +1,28 @@
+yt-mp3() {
+    cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Backingtracks
+    yt-dlp -f 140 --output '%(title)s.%(ext)s' $@
+}
+
+addkarakeep() {
+  karakeep bookmarks add --link $@
+}
+
+64d() {
+    echo "$@" | base64 -d
+}
+
+64() {
+    echo -n "$@" | base64
+}
+
+genpw() {
+    echo ${2} | htpasswd -BinC 10 ${1} | cut -d: -f2
+}
+
+get_san() {
+  if [ -z "$1" ]; then
+    echo "Usage: get_san <domain>"
+    return 1
+  fi
+  echo -n "" | openssl s_client -connect "$1:443" -showcerts 2>/dev/null | openssl x509 -noout -text | grep -A 1 "Subject Alternative Name" | tail -n 1
+}
