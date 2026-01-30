@@ -1,8 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # ZSH Setup Script für Ubuntu Server
 # Installiert: zsh, oh-my-zsh, powerlevel10k, fzf, atuin
+#
+# Verwendung:
+#   curl -fsSL https://raw.githubusercontent.com/ruedigerp/setup-zsh/main/setup-zsh.sh | bash
+#   (WICHTIG: "bash" statt "sh" verwenden!)
 
 # ===========================================
 # KONFIGURATION - Hier anpassen!
@@ -19,9 +23,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-log() { printf "${CYAN}[INFO]${NC} %s\n" "$1"; }
-success() { printf "${GREEN}[OK]${NC} %s\n" "$1"; }
-warn() { printf "${YELLOW}[WARN]${NC} %s\n" "$1"; }
+log() { printf "%b[INFO]%b %s\n" "$CYAN" "$NC" "$1"; }
+success() { printf "%b[OK]%b %s\n" "$GREEN" "$NC" "$1"; }
+warn() { printf "%b[WARN]%b %s\n" "$YELLOW" "$NC" "$1"; }
 
 # Root-Check
 if [ "$EUID" -eq 0 ]; then
