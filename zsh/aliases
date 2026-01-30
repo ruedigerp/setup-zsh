@@ -63,6 +63,7 @@ case $(uname) in
     alias knode="kubectl get nodes "
     alias kdeploy="kubectl get deploy "
     alias kpod="kubectl get pods "
+    alias dnsflush="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
     unalias ping
     ;;  
 esac
