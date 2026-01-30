@@ -19,12 +19,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-log() { echo -e "${CYAN}[INFO]${NC} $1"; }
-success() { echo -e "${GREEN}[OK]${NC} $1"; }
-warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log() { printf "${CYAN}[INFO]${NC} %s\n" "$1"; }
+success() { printf "${GREEN}[OK]${NC} %s\n" "$1"; }
+warn() { printf "${YELLOW}[WARN]${NC} %s\n" "$1"; }
 
 # Root-Check
-if [[ $EUID -eq 0 ]]; then
+if [ "$EUID" -eq 0 ]; then
     warn "Script läuft als root - Installation erfolgt für root-User"
 fi
 
@@ -36,7 +36,7 @@ sudo apt-get update
 sudo apt-get install -y zsh git curl wget fontconfig unzip
 
 # Oh-My-Zsh installieren
-if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
     log "Installiere Oh-My-Zsh..."
     RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     success "Oh-My-Zsh installiert"
@@ -46,7 +46,7 @@ fi
 
 # Powerlevel10k installieren
 P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-if [[ ! -d "$P10K_DIR" ]]; then
+if [ ! -d "$P10K_DIR" ]; then
     log "Installiere Powerlevel10k..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
     success "Powerlevel10k installiert"
@@ -55,7 +55,7 @@ else
 fi
 
 # fzf installieren
-if [[ ! -d "$HOME/.fzf" ]]; then
+if [ ! -d "$HOME/.fzf" ]; then
     log "Installiere fzf..."
     git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
     "$HOME/.fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
@@ -65,7 +65,7 @@ else
 fi
 
 # Atuin installieren
-if ! command -v atuin &> /dev/null; then
+if ! command -v atuin > /dev/null 2>&1 && [ ! -f "$HOME/.atuin/bin/atuin" ]; then
     log "Installiere Atuin..."
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
     success "Atuin installiert"
@@ -77,25 +77,29 @@ fi
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 # zsh-autosuggestions
-if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
     log "Installiere zsh-autosuggestions..."
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+    success "zsh-autosuggestions installiert"
+else
+    warn "zsh-autosuggestions bereits vorhanden"
 fi
 
 # zsh-syntax-highlighting
-if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
     log "Installiere zsh-syntax-highlighting..."
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+    success "zsh-syntax-highlighting installiert"
+else
+    warn "zsh-syntax-highlighting bereits vorhanden"
 fi
 
-# Powerlevel10k Config von Git laden
-if [[ -n "$P10K_CONFIG_URL" ]]; then
-    log "Lade .p10k.zsh von Git..."
-    if curl -fsSL "$P10K_CONFIG_URL" -o "$HOME/.p10k.zsh"; then
-        success ".p10k.zsh heruntergeladen"
-    else
-        warn "Konnte .p10k.zsh nicht laden - nutze 'p10k configure' nach der Installation"
-    fi
+# Powerlevel10k Config von Git laden (immer überschreiben)
+log "Lade .p10k.zsh von Git..."
+if curl -fsSL "$P10K_CONFIG_URL" -o "$HOME/.p10k.zsh"; then
+    success ".p10k.zsh heruntergeladen"
+else
+    warn "Konnte .p10k.zsh nicht laden - nutze 'p10k configure' nach der Installation"
 fi
 
 # .zshrc konfigurieren
@@ -149,7 +153,7 @@ success ".zshrc konfiguriert"
 
 # Default Shell ändern
 log "Setze zsh als Default-Shell..."
-if [[ "$SHELL" != "$(which zsh)" ]]; then
+if [ "$SHELL" != "$(which zsh)" ]; then
     sudo chsh -s "$(which zsh)" "$USER"
     success "Default-Shell auf zsh geändert"
 else
