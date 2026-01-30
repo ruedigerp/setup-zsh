@@ -63,8 +63,8 @@ case $(uname) in
     alias knode="kubectl get nodes "
     alias kdeploy="kubectl get deploy "
     alias kpod="kubectl get pods "
+    unalias ping
     ;;  
 esac
 
-unalias ping
 
