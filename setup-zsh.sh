@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# ZSH Setup Script für Ubuntu Server
+# ZSH Setup Script für Linux und macOS
 # Installiert: zsh, oh-my-zsh, powerlevel10k, fzf, atuin
 #
 # Verwendung:
@@ -27,8 +27,12 @@ log() { printf "%b[INFO]%b %s\n" "$CYAN" "$NC" "$1"; }
 success() { printf "%b[OK]%b %s\n" "$GREEN" "$NC" "$1"; }
 warn() { printf "%b[WARN]%b %s\n" "$YELLOW" "$NC" "$1"; }
 
-# Root-Check
-if [ "$EUID" -eq 0 ]; then
+# OS erkennen
+OS="$(uname -s)"
+log "Erkanntes Betriebssystem: $OS"
+
+# Root-Check (nur für Linux relevant)
+if [ "$OS" = "Linux" ] && [ "$EUID" -eq 0 ]; then
     warn "Script läuft als root - Installation erfolgt für root-User"
 fi
 
@@ -36,8 +40,20 @@ log "Starte ZSH Setup..."
 
 # System-Pakete installieren
 log "Installiere Abhängigkeiten..."
-sudo apt-get update
-sudo apt-get install -y zsh git curl wget fontconfig unzip
+if [ "$OS" = "Darwin" ]; then
+    # macOS mit Homebrew
+    if ! command -v brew > /dev/null 2>&1; then
+        warn "Homebrew nicht gefunden - installiere Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    brew install zsh git curl wget fontconfig unzip
+elif [ "$OS" = "Linux" ]; then
+    # Linux mit apt
+    sudo apt-get update
+    sudo apt-get install -y zsh git curl wget fontconfig unzip
+else
+    warn "Unbekanntes Betriebssystem: $OS - überspringe Paketinstallation"
+fi
 
 # Oh-My-Zsh installieren
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -171,7 +187,11 @@ success ".zshrc konfiguriert"
 # Default Shell ändern
 log "Setze zsh als Default-Shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
-    sudo chsh -s "$(which zsh)" "$USER"
+    if [ "$OS" = "Darwin" ]; then
+        chsh -s "$(which zsh)"
+    else
+        sudo chsh -s "$(which zsh)" "$USER"
+    fi
     success "Default-Shell auf zsh geändert"
 else
     warn "zsh ist bereits Default-Shell"
