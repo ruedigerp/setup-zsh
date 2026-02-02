@@ -96,9 +96,20 @@ fi
 # Atuin konfigurieren
 log "Konfiguriere Atuin..."
 mkdir -p "$HOME/.config/atuin"
-cat > "$HOME/.config/atuin/config.toml" << 'EOF'
+ATUIN_CONFIG="$HOME/.config/atuin/config.toml"
+if [ -f "$ATUIN_CONFIG" ]; then
+    # Config existiert - sync_address am Anfang einfügen falls nicht vorhanden
+    if ! grep -q "^sync_address" "$ATUIN_CONFIG"; then
+        # Temporäre Datei mit sync_address am Anfang erstellen
+        { echo 'sync_address = "https://atuin.dev.kuepper.nrw"'; echo ""; cat "$ATUIN_CONFIG"; } > "$ATUIN_CONFIG.tmp"
+        mv "$ATUIN_CONFIG.tmp" "$ATUIN_CONFIG"
+    fi
+else
+    # Neue Config erstellen
+    cat > "$ATUIN_CONFIG" << 'EOF'
 sync_address = "https://atuin.dev.kuepper.nrw"
 EOF
+fi
 success "Atuin konfiguriert"
 
 # Nützliche Plugins installieren
