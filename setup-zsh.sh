@@ -93,6 +93,14 @@ else
     warn "Atuin bereits vorhanden"
 fi
 
+# Atuin konfigurieren
+log "Konfiguriere Atuin..."
+mkdir -p "$HOME/.config/atuin"
+cat > "$HOME/.config/atuin/config.toml" << 'EOF'
+sync_address = "https://atuin.dev.kuepper.nrw"
+EOF
+success "Atuin konfiguriert"
+
 # Nützliche Plugins installieren
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
