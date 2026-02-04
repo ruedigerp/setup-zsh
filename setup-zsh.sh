@@ -226,7 +226,7 @@ fi
   ./"${KREW}" install krew
 )
 
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH="${HOME}/.krew/bin:$PATH"
 
 kubectl krew install cnpg
 
