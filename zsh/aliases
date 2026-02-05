@@ -25,6 +25,7 @@ case $(uname) in
     alias p='ps fauxww'
     alias pgrep='ps fauxww | grep $@'
     alias pigrep='ps fauxww | grep -i $@'
+    export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
   ;;
   'Darwin')
     alias p='ps auxww'
@@ -48,6 +49,7 @@ case $(uname) in
     alias moup="sudo wg-quick up wireguard-export/client_rk_mac.conf"
     alias ls="colorls"
     alias vim=nvim
+    unalias ping
   ;;
   *)
     alias vm-list='curl -s https://vm-tracker.kuepper.nrw/api/vms | jq -r ".[] | \"\(.hostname)\t\(.ip_address)\t\(.status)\""'
@@ -64,7 +66,7 @@ case $(uname) in
     alias kdeploy="kubectl get deploy "
     alias kpod="kubectl get pods "
     alias dnsflush="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-    unalias ping
+    alias abdafür="flux reconcile kustomization flux-system --with-source"
     ;;  
 esac
 
