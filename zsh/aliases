@@ -49,6 +49,8 @@ case $(uname) in
     alias moup="sudo wg-quick up wireguard-export/client_rk_mac.conf"
     alias ls="colorls"
     alias vim=nvim
+    alias rmdstore='find . -name "*.DS*" | xargs rm'
+    alias jpg2mov="ffmpeg -framerate 10 -pattern_type glob -i '*.jpg' -c:v libx264 -pix_fmt yuv420p output.mp4"
     unalias ping
   ;;
   *)
